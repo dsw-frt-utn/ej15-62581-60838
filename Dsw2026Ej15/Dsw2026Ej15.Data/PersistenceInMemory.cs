@@ -58,31 +58,7 @@ namespace Dsw2026Ej15.Data
             {
                 Console.WriteLine($"Error cargando especialidades: {e.Message}");
             }
-        }
-
-        public void AddDoctor(Doctor doctor)
-        {
-            _doctors.Add(doctor);
-        }
-
-        public IEnumerable<Doctor> GetActiveDoctors()
-        {
-            return _doctors.Where(d => d.IsActive);
-        }
-
-        public Doctor? GetDoctorById(Guid id)
-        {
-            return _doctors.FirstOrDefault(d => d.Id == id);
-        }
-
-        public Speciality? GetSpecialityById(Guid id)
-        {
-            return _specialities.FirstOrDefault(s => s.Id == id);
-        }
-
-
-
-
+        }    
     }
 
 }

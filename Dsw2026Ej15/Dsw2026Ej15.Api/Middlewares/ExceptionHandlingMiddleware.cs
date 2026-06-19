@@ -23,8 +23,7 @@ namespace Dsw2026Ej15.Api.Middlewares
                 await _next(context);
             }
             catch (ValidationException ex)
-            {
-                // i. Cuando es ValidationException, retornamos 400 Bad Request
+            {      
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
@@ -32,8 +31,7 @@ namespace Dsw2026Ej15.Api.Middlewares
                 await context.Response.WriteAsync(result);
             }
             catch (Exception ex)
-            {
-                // ii. En cualquier otro caso, retornamos 500
+            {        
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 

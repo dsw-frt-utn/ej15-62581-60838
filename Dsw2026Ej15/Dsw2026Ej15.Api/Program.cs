@@ -16,6 +16,8 @@ namespace Dsw2026Ej15.Api
             builder.Services.AddSwaggerGen();
             builder.Services.AddSingleton<IPersistence, PersistenceInMemory>();
 
+            builder.Services.AddHealthChecks();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -31,6 +33,8 @@ namespace Dsw2026Ej15.Api
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.MapHealthChecks("/health-check");
 
             app.Run();
         }
