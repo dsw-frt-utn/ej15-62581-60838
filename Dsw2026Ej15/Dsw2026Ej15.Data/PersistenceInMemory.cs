@@ -4,13 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using Dsw2026Ej15.Data.Dtos;
 
 namespace Dsw2026Ej15.Data
 {
     public class PersistenceInMemory : IPersistence
     {
-        private readonly List<Doctor> _doctors = new();
-        private List<Speciality> _specialities = new();
+        private readonly List<Doctor> _doctors = [];
+        private List<Speciality> _specialities = [];
 
         public PersistenceInMemory()
         {
@@ -21,9 +22,11 @@ namespace Dsw2026Ej15.Data
         {
             try
             {
-                var json = File.ReadAllText("specialities.json");
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                _specialities = JsonSerializer.Deserialize<List<Speciality>>(json, options) ?? new List<Speciality>();
+                string jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sources", "specialities.json");
+                var json = File.ReadAllText(jsonPath);
+                var specialities = JsonSerializer.Deserialize<List<SpecialityDto>>(json, 
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? [];
+                _specialities = [.. specialities.Select(s => new Speciality(s.Name, s.Description, s.Id))];
             }
             catch(Exception e)
             {
@@ -31,33 +34,6 @@ namespace Dsw2026Ej15.Data
             }
         }
 
-        public IEnumerable<Doctor> GetActiveDoctors()
-        {
-            return _doctors.Where(d => d.IsActive);
-        }
-
-        public Doctor? GetActiveDoctorById(Guid id)
-        {
-            return _doctors.FirstOrDefault(d => d.Id == id && d.IsActive);
-        }
-
-        public void AddDoctor(Doctor doctor)
-        {
-            _doctors.Add(doctor);
-        }
-
-        public void DeactivateDoctor(Guid id)
-        {
-            var doctor = GetActiveDoctorById(id);
-            if (doctor != null)
-            {
-                doctor.IsActive = false;
-            }
-        }
-
-        public Speciality? GetSpecialityById(Guid id)
-        {
-            return _specialities.FirstOrDefault(s => s.Id == id);
-        }
+      
     }
 }
