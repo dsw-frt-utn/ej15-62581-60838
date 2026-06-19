@@ -18,6 +18,32 @@ namespace Dsw2026Ej15.Data
             LoadSpecialities();
         }
 
+        public Speciality? GetSpecialityById(Guid id)
+        {
+            return _specialities.SingleOrDefault(s => s.Id == id);
+        }
+        public void AddDoctor(Doctor doctor)
+        {
+            _doctors.Add(doctor);
+        }
+        public IEnumerable<Doctor> GetActiveDoctors()
+        {
+            return _doctors.Where(d => d.IsActive);
+        }
+        public Doctor? GetActiveDoctorById(Guid id)
+        {
+            return _doctors.FirstOrDefault(d => d.Id == id && d.IsActive);
+        }
+        public void DeactivateDoctor(Guid id)
+        {
+            var doctor = GetActiveDoctorById(id);
+            if (doctor != null)
+            {
+                doctor.Deactivate();
+            }
+        }
+
+
         private void LoadSpecialities()
         {
             try
