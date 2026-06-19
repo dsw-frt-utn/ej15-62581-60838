@@ -2,6 +2,7 @@
 using Dsw2026Ej15.Domain.Interfaces;
 using Dsw2026Ej15.Domain.Entities;
 using Dsw2026Ej15.Api.Dtos;
+using Dsw2026Ej15.Domain.Exceptions;
 using System;
 using System.Linq;
 
@@ -18,29 +19,34 @@ namespace Dsw2026Ej15.Api.Controllers
             _persistence = persistence;
         }
 
-        
+        // i. POST api/doctors - Insertar un nuevo médico (lanza ValidationException)
         [HttpPost]
         public IActionResult CreateDoctor([FromBody] CreateDoctorRequest request)
         {
-            if (!ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(request.Name))
             {
-                return BadRequest(ModelState);
+                throw new ValidationException("El nombre del médico es requerido.");
+            }
+
+            if (string.IsNullOrWhiteSpace(request.LicenseNumber))
+            {
+                throw new ValidationException("El número de licencia (matrícula) es requerido.");
             }
 
             var speciality = _persistence.GetSpecialityById(request.SpecialityId);
             if (speciality == null)
             {
-                return BadRequest(new { message = $"La especialidad con ID '{request.SpecialityId}' no existe." });
+                throw new ValidationException($"La especialidad con ID '{request.SpecialityId}' no existe.");
             }
 
             var doctor = new Doctor(request.Name, request.LicenseNumber, speciality);
             _persistence.AddDoctor(doctor);
 
-            
+            // Retorna 201 Created y el enlace para consultar al nuevo médico
             return CreatedAtAction(nameof(GetDoctorById), new { id = doctor.Id }, doctor);
         }
 
-        
+        // ii. GET api/doctors - Obtener todos los médicos activos
         [HttpGet]
         public IActionResult GetActiveDoctors()
         {
@@ -57,7 +63,7 @@ namespace Dsw2026Ej15.Api.Controllers
             return Ok(result);
         }
 
-        
+        // iii. GET api/doctors/{id} - Obtener un médico activo a partir de su Id
         [HttpGet("{id:guid}")]
         public IActionResult GetDoctorById(Guid id)
         {
@@ -77,7 +83,7 @@ namespace Dsw2026Ej15.Api.Controllers
             return Ok(result);
         }
 
-        
+        // iv. DELETE api/doctors/{id} - Establecer como inactivo al médico
         [HttpDelete("{id:guid}")]
         public IActionResult DeactivateDoctor(Guid id)
         {
@@ -92,4 +98,3 @@ namespace Dsw2026Ej15.Api.Controllers
         }
     }
 }
-

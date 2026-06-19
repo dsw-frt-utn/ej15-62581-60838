@@ -1,6 +1,7 @@
 
 using Dsw2026Ej15.Domain.Interfaces;
 using Dsw2026Ej15.Data;
+using Dsw2026Ej15.Api.Middlewares;
 
 namespace Dsw2026Ej15.Api
 {
@@ -11,8 +12,7 @@ namespace Dsw2026Ej15.Api
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
-            builder.Services.AddControllers();      
+            builder.Services.AddControllers();
             builder.Services.AddSwaggerGen();
             builder.Services.AddSingleton<IPersistence, PersistenceInMemory>();
 
@@ -25,8 +25,10 @@ namespace Dsw2026Ej15.Api
                 app.UseSwaggerUI();
             }
 
-            app.UseAuthorization();
+            // Habilitar el middleware de control de excepciones personalizado
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+            app.UseAuthorization();
 
             app.MapControllers();
 
@@ -34,3 +36,4 @@ namespace Dsw2026Ej15.Api
         }
     }
 }
+
