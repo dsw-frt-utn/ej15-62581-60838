@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -14,5 +14,9 @@ namespace Dsw2026Ej15.Domain.Entities
             Name = name;
             Description = description;
         }
+
+        #pragma warning disable CS8618 // Required by EF Core
+        protected Speciality() { }
+        #pragma warning restore CS8618
     }
 }
