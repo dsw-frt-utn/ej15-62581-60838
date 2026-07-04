@@ -6,10 +6,10 @@ namespace Dsw2026Ej15.Domain.Interfaces
 {
     public interface IPersistence
     {
-        Speciality? GetSpecialityById(Guid id);
-        void AddDoctor(Doctor doctor);
-        IEnumerable<Doctor> GetActiveDoctors();
-        Doctor? GetActiveDoctorById(Guid id);
-        void DeactivateDoctor(Guid id);
+        Task AddDoctor(Doctor doctor);
+        Task<Speciality?> GetSpecialityById(Guid id);
+        Task<IEnumerable<Doctor>> GetAllDoctors();
+        Task<Doctor?> GetDoctor(Guid doctorId);
+        Task UpdateDoctor(Doctor doctor);
     }
 }
